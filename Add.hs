@@ -34,7 +34,7 @@ addRecept = do
 addIngredient :: IO ()
 addIngredient = do
     -- чтение ингредиенты
-    ingredient_handle <- openFile "ingredient.txt" ReadMode
+    ingredient_handle <- openFile "new_ing.txt" ReadMode
     ingredient_contents <- hGetContents ingredient_handle
 
     print "Write new ingredient"
@@ -43,7 +43,7 @@ addIngredient = do
     let 
        temp_ingredient = ingredient_contents ++ "\n" ++ new_ingredient
     when (length temp_ingredient > 0) $
-       writeFile "ingredient.txt" temp_ingredient
+       writeFile "new_ing.txt" temp_ingredient
 
 addPrice :: IO ()
 addPrice = do

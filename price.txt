@@ -363,7 +363,6 @@ unsalted_soda_crackers 9
 cream_of_tartar 2
 taco 4
 ham 3
-egg 8
 frozen_raspberry 1
 egg_whites 7
 cheese 4
@@ -615,3 +614,4 @@ parsley_flakes 1
 green_onion 2
 apple_juice 3
 white_vinegar 7
+egg 100

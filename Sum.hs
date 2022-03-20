@@ -92,6 +92,9 @@ calc_result sum_value price_struct = res
         res = sum_value + num1
 
 
+get_ing :: Price -> String
+get_ing a = ingredient_ a
+
 cacl_value :: [String] -> [String] -> Integer
 cacl_value [] [] = 0
 cacl_value (x:xs) (y:ys) = res
@@ -100,7 +103,10 @@ cacl_value (x:xs) (y:ys) = res
         num2 = read x :: Integer
         res = cacl_value xs ys + (num1 * num2)
 
-
+length1 :: Num a1 => [a2] -> a1
+length1 xs = len xs 0 where  
+              len []     acc = acc
+              len (x:xs) acc = len xs $! (1 + acc)
 
 sum_ :: IO()
 sum_ = do
@@ -141,43 +147,51 @@ sum_ = do
         find_ingredient = map (find_ choose) struct_ingredient
         -- очистка от мусора
         clear_ingredient = catMaybes find_ingredient
+    if clear_ingredient == [] then print "Recept not found"
+    else do
+        let
+            -- получение  списка  ингредиентов из структуры ингредиентов
+            get_ingredients = map get_ingredient clear_ingredient
+            -- получение списка грамовок ингредиентов
+            get_value_ingredients = map get_value_ingredient clear_ingredient
 
-        -- получение  списка  ингредиентов из структуры ингредиентов
-        get_ingredients = map get_ingredient clear_ingredient
-        -- получение списка грамовок ингредиентов
-        get_value_ingredients = map get_value_ingredient clear_ingredient
+            -- разбиваем список по переносу строки
+            list_price = wordsWhen (=='\n') price_contents
+            --разбиваем еще каждый список слова по пробелу
+            all_price = map (wordsWhen (==' '))  list_price
+            -- все это в структуру данных
+            stuct_price = map add_price all_price
+            -- получение список стоимости
+            need_price = map (get_price stuct_price) get_ingredients
+            -- отчистка от мусора
+            clear_price = catMaybes need_price
 
-        -- разбиваем список по переносу строки
-        list_price = wordsWhen (=='\n') price_contents
-         --разбиваем еще каждый список слова по пробелу
-        all_price = map (wordsWhen (==' '))  list_price
-          -- все это в структуру данных
-        stuct_price = map add_price all_price
+            -- получаем список цен за грамм продукта
+            price_value = map get_price_value clear_price
+            ing_error = map get_ing clear_price
+        if length1 price_value /= length1 get_value_ingredients then do 
+            print "Error need add price ingredient. ingredient show >"
+            print ing_error
+            print "Recept show>"
+            print get_ingredients
+        else do
+            let
+                -- считаем стоимость рецепта
+                calc_price = cacl_value price_value get_value_ingredients
 
-        -- получение список стоимости
-        need_price = map (get_price stuct_price) get_ingredients
-        -- отчистка от мусора
-        clear_price = catMaybes need_price
+                list_work = wordsWhen (=='\n') work_contents
+                --разбиваем еще каждый список слова по пробелу
+                all_work = map (wordsWhen (==' '))  list_work
+                -- все это в структуру данных
+                stuct_work = map add_work all_work
+                -- получение список стоимости
+                find_works = map (find_work choose) stuct_work
+                clear_find_works = catMaybes find_works
 
-        -- получаем список цен за грамм продукта
-        price_value = map get_price_value clear_price
+                result_sum = calc_result calc_price (head clear_find_works)
 
-        -- считаем стоимость рецепта
-        calc_price = cacl_value price_value get_value_ingredients
-
-        list_work = wordsWhen (=='\n') work_contents
-         --разбиваем еще каждый список слова по пробелу
-        all_work = map (wordsWhen (==' '))  list_work
-          -- все это в структуру данных
-        stuct_work = map add_work all_work
-        -- получение список стоимости
-        find_works = map (find_work choose) stuct_work
-        clear_find_works = catMaybes find_works
-
-        result_sum = calc_result calc_price (head clear_find_works)
-
-        --итоговый прайс
-    print("Result sum= " ++ show result_sum)
+                --итоговый прайс
+            print("Result sum= " ++ show result_sum)
 
 
 
